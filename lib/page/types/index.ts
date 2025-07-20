@@ -1,0 +1,1 @@
+export type { PageMeta, PageBlock, PagePlugin, PageTheme } from "./page";

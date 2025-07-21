@@ -12,8 +12,8 @@ export type Mobilization = {
 
 export type Block = {
     id: number;
-    menu_hidden: boolean;
-    hidden: boolean;
+    menu_hidden?: boolean;
+    hidden?: boolean;
     bg_class?: string;
     bg_image?: string;
     name: string;

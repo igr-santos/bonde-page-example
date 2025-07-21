@@ -8,10 +8,9 @@ function Content() {
     const blocks = useBlocks();
 
     return (
-        <main className="flex-1 overflow-auto px-6 md:px-0 py-8">
-            <div className="container mx-auto">
-                {blocks.map(({ id }) => <Block key={`block-${id}`} id={id} />)}
-            </div>
+        <main className="flex-1 overflow-auto">
+
+            {blocks.map(({ id }) => <Block key={`block-${id}`} id={id} />)}
         </main>
     )
 }

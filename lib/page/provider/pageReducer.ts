@@ -48,7 +48,10 @@ export function reducer(state: any, action: any) {
         return {
             ...state,
             blocks: state.blocks.map((b: PageBlock) =>
-                b.id === action.block.id ? action.block : b
+                b.id === action.block.id ? {
+                    ...b,
+                    ...action.block
+                 } : b
             )
         }
     } else if (action.type === "updatePlugin") {

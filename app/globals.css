@@ -24,3 +24,28 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+
+.rjsf #root__title {
+  @apply text-xl font-bold mb-4;
+}
+
+.rjsf .form-group {
+  @apply flex flex-col gap-1 mb-3;
+}
+
+.rjsf .form-group .control-label {
+  @apply text-sm font-bold text-gray-700;
+}
+
+.rjsf .form-group .form-control {
+  @apply border border-gray-300;
+}
+
+.rjsf .form-group .checkbox > label {
+  @apply flex gap-1;
+}
+
+.rjsf .btn {
+  @apply border px-4 py-2 bg-black text-white hover:bg-transparent hover:text-black cursor-pointer;
+}

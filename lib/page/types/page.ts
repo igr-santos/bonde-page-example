@@ -15,9 +15,14 @@ export interface PagePlugin {
 
 export interface PageBlock {
     id: number;
-    layout: string;
     name: string;
+    bg_class?: string;
+    bg_imagem?: string;
+    hidden?: boolean;
+    menu_hidden?: boolean;
+    // 
     plugins: number[];
+    layout: string;
     __typename?: string;
 }
 

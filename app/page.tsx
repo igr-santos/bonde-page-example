@@ -7,6 +7,7 @@ import type { MobilizationByFilterData } from "@/lib/graphql/types";
 import { Page } from "@/lib/page";
 import { PageServerProvider } from "@/lib/page/provider";
 import type { PageMeta, PageBlock, PageTheme, PagePlugin } from "@/lib/page/types/page";
+import { transformBondeResponseToPage } from "@/lib/page/utils";
 
 export async function generateMetadata(
   props: any,
@@ -68,25 +69,11 @@ export default async function Home() {
   if (result.data?.mobilizations.length != 1) {
     throw Error("PageError")
   }
-  // console.log(result);
-  // console.log(result.data?.mobilizations);
-  const { name: title, facebook_share_description: description } = result.data?.mobilizations[0];
-  const meta: PageMeta = { title, description: description || "" };
-  const theme: PageTheme = {  };
-  const blocks: PageBlock[] = result.data?.blocks.map((block) => {
-    const plugins = block.plugins.map((plugin) => plugin.id);
 
-    return {
-      id: block.id,
-      name: block.name,
-      layout: String(plugins?.length),
-      plugins: plugins || []
-    }
-  });
-  const plugins: PagePlugin[] = result.data?.plugins;
+  const pageData = transformBondeResponseToPage(result);
 
   return (
-    <PageServerProvider data={{ meta, blocks, theme, plugins }}>
+    <PageServerProvider data={pageData}>
       <Page />
     </PageServerProvider>
   );

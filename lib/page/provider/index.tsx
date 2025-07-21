@@ -3,7 +3,7 @@ import React, { useCallback, useState } from "react";
 import { createContext } from "use-context-selector";
 
 import { createCSRClient } from "@/lib/graphql/client";
-import { updateWidget } from "@/lib/graphql/mutations";
+import { updateWidgetGql, updateBlockGql } from "@/lib/graphql/mutations";
 
 import { usePageDataLoader } from "../hooks";
 import type { PageData, PagePlugin, PageBlock } from "../types/page";
@@ -58,21 +58,36 @@ export default function PageProvider({ children }: { children: React.ReactNode }
         }, 2000); // tempo de exibição
     }
 
-    const updateBlock = useCallback((block: PageBlock) => {
-        dispatch({ type: "updateBlock", block });
+    const updateBlock = useCallback(({ id, __typename, ...updatedFields }: PageBlock) => {
+        // TODO: update on GraphQL API
+        const client = createCSRClient();
+        console.log("updateBlock", { id, updatedFields });
+        client.mutation(updateBlockGql, {
+            id: id,
+            updated_fields: updatedFields
+        })
+            .toPromise()
+            .then((result) => {
+                console.log(result);
+                dispatch({ type: "updateBlock", block: result.data?.update_blocks_by_pk });
+                notify("Bloco atualizado com sucesso!", "success");
+            }).catch((err) => {
+                console.error("updateBlock ->> GraphQL:", err);
+            })
+        
     }, [dispatch]);
 
     const updatePlugin = useCallback(({ id, __typename, ...updatedFields }: PagePlugin) => {
         // TODO: update on GraphQL API
         const client = createCSRClient();
-        client.mutation(updateWidget, {
+        client.mutation(updateWidgetGql, {
             id: id,
             updated_fields: updatedFields
         })
             .toPromise()
             .then((result) => {
                 dispatch({ type: "updatePlugin", plugin: result.data?.update_widgets_by_pk });
-                notify("Plugin atualizado", "success");
+                notify("Plugin atualizado com sucesso!", "success");
             }).catch((err) => {
                 console.error("updatePlugin ->> GraphQL:", err);
             })

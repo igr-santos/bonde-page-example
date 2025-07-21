@@ -1,26 +1,36 @@
-import React from "react";
-import dynamic from "next/dynamic";
+"use client";
+import React, { Suspense, lazy } from "react";
+import { PluginSkeleton } from "@/lib/page/components";
 import { useUpdatePlugin, useEditable } from "@/lib/page/hooks";
 import type { PagePlugin } from "@/lib/page/types";
 
-// TODO: Documentar Conteúdo
-export default function ContentPlugin({ id, settings, ...plugin }: PagePlugin) {
-    const updatePlugin = useUpdatePlugin();
-    const editable = useEditable();
+// Carregamento Lazy para evitar problemas no SSR
+const HTMLEditor = lazy(() => import("./HTMLEditor"));
 
-    if (editable) {
-        const HTMLEditor = dynamic(() => import("./HTMLEditor"), { ssr: false });
-        
+// TODO: Documentar Conteúdo
+function ContentPlugin({ id, settings, ...plugin }: PagePlugin) {
+    const editable = useEditable();
+    const updatePlugin = useUpdatePlugin();
+
+    if (editable) {        
         return (
-            <HTMLEditor
-                id={`content-${id}`}
-                initialValue={settings.content}
-                onBlur={(newContent: string) => {
-                    updatePlugin({ id, settings: {...settings, content: newContent}, ...plugin });
-                }}
-            />
+            <Suspense fallback={<PluginSkeleton />}>
+                <HTMLEditor
+                    id={`content-${id}`}
+                    initialValue={settings.content}
+                    onBlur={(newContent: string) => {
+                        if (settings.content !== newContent) {
+                            // Garante que o método de atualização do Plugin só sera invocado
+                            // quando realmente houver necessidade, evitando re-renders da estrutura.
+                            updatePlugin({ id, settings: {...settings, content: newContent}, ...plugin });
+                        }
+                    }}
+                />
+            </Suspense>
         )
     }
 
     return <div dangerouslySetInnerHTML={{ __html: settings.content }} />;
 }
+
+export default React.memo(ContentPlugin);

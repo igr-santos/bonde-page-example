@@ -1,9 +1,9 @@
 "use client";
 import React from "react";
-import { usePageContext } from "../context/PageProvider";
+import { useBlocks } from "../hooks";
 
-export default function Navbar() {
-    const { blocks } = usePageContext();
+function Navbar() {
+    const blocks = useBlocks();
 
     return (
         <>
@@ -18,3 +18,5 @@ export default function Navbar() {
         </>
     )
 }
+
+export default React.memo(Navbar);

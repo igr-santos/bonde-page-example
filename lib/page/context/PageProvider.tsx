@@ -31,16 +31,20 @@ export default function PageProvider({ data, children }: { data: PageData, child
                 const { __typename, ...newPlugin } = result.data.update_widgets_by_pk
                 // Depois atualiza no estado
                 setBlocks(prevBlocks =>
-                    prevBlocks.map(block => ({
-                        ...block,
-                        plugins: block.plugins.map(plugin =>
-                            plugin.id === newPlugin.id ? newPlugin : plugin
-                        )
-                    }))
+                    prevBlocks.map(block => {
+                        if (!block.plugins.some(p => p.id === newPlugin.id)) return block;
+    
+                        return {
+                            ...block,
+                            plugins: block.plugins.map(plugin =>
+                                plugin.id === newPlugin.id ? newPlugin : plugin
+                            )
+                        }
+                    })
                 );
                 console.log("TODO: Mensagem de sucesso!");
             }
-        })
+        });
     };
 
     return (

@@ -4,8 +4,9 @@ import { createSSRClient } from "@/lib/graphql/client";
 import { getHostFromHeaders } from '@/lib/graphql/getHost';
 import { getMobilizationByFilter, getMetadataByFilter } from "@/lib/graphql/queries";
 import type { MobilizationByFilterData } from "@/lib/graphql/types";
-import { PageProvider, Page } from "@/lib/page";
-import type { PageMeta, PageBlock, PageTheme } from "@/lib/page/types/page";
+import { Page } from "@/lib/page";
+import { PageServerProvider } from "@/lib/page/provider";
+import type { PageMeta, PageBlock, PageTheme, PagePlugin } from "@/lib/page/types/page";
 
 export async function generateMetadata(
   props: any,
@@ -73,11 +74,7 @@ export default async function Home() {
   const meta: PageMeta = { title, description: description || "" };
   const theme: PageTheme = {  };
   const blocks: PageBlock[] = result.data?.blocks.map((block) => {
-    const plugins = result.data?.widgets.filter((widget) => widget.block_id === block.id).map((widget) => ({
-      id: widget.id,
-      kind: widget.kind,
-      settings: widget.settings
-    }));
+    const plugins = block.plugins.map((plugin) => plugin.id);
 
     return {
       id: block.id,
@@ -86,10 +83,11 @@ export default async function Home() {
       plugins: plugins || []
     }
   });
+  const plugins: PagePlugin[] = result.data?.plugins;
 
   return (
-    <PageProvider data={{ meta, blocks, theme }}>
+    <PageServerProvider data={{ meta, blocks, theme, plugins }}>
       <Page />
-    </PageProvider>
+    </PageServerProvider>
   );
 }

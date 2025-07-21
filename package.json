@@ -15,9 +15,9 @@
     "next": "15.4.1",
     "react": "19.1.0",
     "react-dom": "19.1.0",
-    "slate-serializers": "^2.2.3",
     "tinymce": "^7.9.1",
-    "urql": "^4.2.2"
+    "urql": "^4.2.2",
+    "use-context-selector": "^2.0.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

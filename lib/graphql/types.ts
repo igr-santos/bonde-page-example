@@ -19,9 +19,10 @@ export type Block = {
     name: string;
     position?: number;
     mobilization_id: number;
+    plugins: { id: number }[]
 }
 
-export type Widget = {
+export type Plugin = {
     id: number;
     kind: string;
     settings: any;
@@ -34,5 +35,5 @@ export type Widget = {
 export type MobilizationByFilterData = {
     mobilizations: Mobilization[];
     blocks: Block[];
-    widgets: Widget[];
+    plugins: Plugin[];
 }

@@ -9,13 +9,14 @@ export interface PagePlugin {
     id: number;
     kind: string;
     settings?: any;
+    block_id: number;
 }
 
 export interface PageBlock {
     id: number;
     layout: string;
     name: string;
-    plugins: PagePlugin[];
+    plugins: number[];
 }
 
 export interface PageTheme {
@@ -27,5 +28,6 @@ export interface PageTheme {
 export interface PageData {
     meta: PageMeta;
     blocks: PageBlock[];
+    plugins: PagePlugin[];
     theme: PageTheme;
 }

@@ -1,14 +1,15 @@
 import React from "react";
 import { useDashboard } from "@/components/Dashboard";
-import type { PageBlock } from "../types/page";
+import { useBlock } from "../hooks";
 import Plugin from "./Plugin";
 
-export default function Block({
-    block
-}: {
-    block: PageBlock;
-}) {
-    const { open } = useDashboard();
+// TODO: Encapsular o bloco com ferramenta de edição useDashboard
+function Block({ id }: { id: number; }) {
+    // const { open } = useDashboard();
+    const block = useBlock(id);
+
+    if (!block) return <>Bloco não encontrado!</>;
+
     // TODO
     // - Alterar esse comportamento para usar uma tipagem mais adequada.
     // - Considerar a possibilidade de diferentes formatos de bloco.
@@ -22,11 +23,13 @@ export default function Block({
     return (
         <div>
             <div id={`block-${block.id}`} className={`${blockLayout[block.layout]}`}>
-                {block.plugins.map(plugin => (
-                    <Plugin key={plugin.id} plugin={plugin} />
+                {block.plugins.map(pluginId => (
+                    <Plugin key={`plugin-${pluginId}`} id={pluginId} />
                 ))}
             </div>
-            <button type="button" onClick={open}>Abrir Drawer</button>
+            {/* <button type="button" onClick={open}>Abrir Drawer</button> */}
         </div>
     )
 }
+
+export default React.memo(Block);

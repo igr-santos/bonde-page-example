@@ -23,9 +23,12 @@ query ($filter: mobilizations_bool_exp!){
         name
         position
         mobilization_id
+        plugins: widgets {
+            id
+        }
     }
     
-    widgets(where: { block: { mobilization: $filter } }, order_by: { id: asc_nulls_last }) {
+    plugins: widgets(where: { block: { mobilization: $filter } }, order_by: { id: asc_nulls_last }) {
         id
         kind
         settings

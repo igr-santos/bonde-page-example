@@ -10,6 +10,7 @@ export interface PagePlugin {
     kind: string;
     settings?: any;
     block_id: number;
+    __typename?: string;
 }
 
 export interface PageBlock {
@@ -17,6 +18,7 @@ export interface PageBlock {
     layout: string;
     name: string;
     plugins: number[];
+    __typename?: string;
 }
 
 export interface PageTheme {

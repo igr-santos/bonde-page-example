@@ -1,10 +1,38 @@
 "use client";
-import React, { useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import { createContext } from "use-context-selector";
-// import { getHostFromWindow } from "@/lib/graphql/getHost";
+
+import { createCSRClient } from "@/lib/graphql/client";
+import { updateWidget } from "@/lib/graphql/mutations";
+
 import { usePageDataLoader } from "../hooks";
 import type { PageData, PagePlugin, PageBlock } from "../types/page";
 
+
+type Notification = {
+    id: string;
+    kind: "success" | "error" | "info";
+    message: "string";
+}
+
+const Notifications = ({ notifications }: { notifications: Notification[] }) => {
+    return (
+        <div className="fixed top-4 right-4 z-50 space-y-2">
+            {notifications.map((n) => (
+                <div
+                    key={n.id}
+                    className={`px-4 py-2 rounded shadow-lg text-white transition-transform ease-out transform translate-y-0 opacity-100
+                        ${n.kind === "success" ? "bg-green-600" : ""}
+                        ${n.kind === "error" ? "bg-red-600" : ""}
+                        ${n.kind === "info" ? "bg-blue-600" : ""}
+                    `}
+                >
+                    {n.message}
+            </div>
+            ))}
+        </div>
+    )
+}
 
 type PageContextValue = {
     meta: PageData["meta"];
@@ -19,14 +47,35 @@ type PageContextValue = {
 export const PageContext = createContext<PageContextValue | null>(null);
 
 export default function PageProvider({ children }: { children: React.ReactNode }) {
+    const [notifications, setNotifications] = useState<Notification[]>([]);
     const { state, dispatch } = usePageDataLoader({ slug: { _eq: "testes-de-widgets" } });
+
+    const notify = (message: string, kind: Notification["kind"] = "info") => {
+        const id = `${Date.now()}-${Math.random()}`;
+        setNotifications((prev: any[]) => [...prev, { id, message, kind }]);
+        setTimeout(() => {
+            setNotifications((prev) => prev.filter((n) => n.id !== id));
+        }, 2000); // tempo de exibição
+    }
 
     const updateBlock = useCallback((block: PageBlock) => {
         dispatch({ type: "updateBlock", block });
     }, [dispatch]);
 
-    const updatePlugin = useCallback((plugin: PagePlugin) => {
-        dispatch({ type: "updatePlugin", plugin });
+    const updatePlugin = useCallback(({ id, __typename, ...updatedFields }: PagePlugin) => {
+        // TODO: update on GraphQL API
+        const client = createCSRClient();
+        client.mutation(updateWidget, {
+            id: id,
+            updated_fields: updatedFields
+        })
+            .toPromise()
+            .then((result) => {
+                dispatch({ type: "updatePlugin", plugin: result.data?.update_widgets_by_pk });
+                notify("Plugin atualizado", "success");
+            }).catch((err) => {
+                console.error("updatePlugin ->> GraphQL:", err);
+            })
     }, [dispatch]);
 
     if (state?.loading) return <p>Carregando campanha</p>;
@@ -45,6 +94,7 @@ export default function PageProvider({ children }: { children: React.ReactNode }
             }}
         >
             {children}
+            <Notifications notifications={notifications} />
         </PageContext.Provider>
     );
 }
@@ -66,8 +116,8 @@ export function PageServerProvider({
                 theme: data.theme,
                 // Métodos de manipulação do estado da página
                 // não serão usados em renderizações SSR
-                updatePlugin: () => {},
-                updateBlock: () => {},
+                updatePlugin: () => { },
+                updateBlock: () => { },
             }}
         >
             {children}

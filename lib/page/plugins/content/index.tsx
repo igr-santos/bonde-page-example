@@ -33,4 +33,4 @@ function ContentPlugin({ id, settings, ...plugin }: PagePlugin) {
     return <div dangerouslySetInnerHTML={{ __html: settings.content }} />;
 }
 
-export default React.memo(ContentPlugin);
+export default ContentPlugin;

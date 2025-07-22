@@ -14,7 +14,7 @@ query ($filter: mobilizations_bool_exp!){
         body_font
     }
     
-    blocks(where: { mobilization: $filter }, order_by: { position: asc_nulls_last }) {
+    blocks(where: { mobilization: $filter, deleted_at: { _is_null: true } }, order_by: { position: asc_nulls_last }) {
         id
         menu_hidden
         hidden

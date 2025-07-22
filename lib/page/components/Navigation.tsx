@@ -7,7 +7,6 @@ function Navbar() {
     const blocks = useBlocks();
 
     return (
-        <>
         <header className={`bg-black/60 text-white py-5 px-5 md:px-0 fixed w-full z-2
                 ${editable ? "top-12" : "top-0"}
             `}>
@@ -17,8 +16,6 @@ function Navbar() {
                 ))}
             </nav>
         </header>
-        <div className="h-16" />
-        </>
     )
 }
 

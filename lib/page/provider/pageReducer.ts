@@ -51,7 +51,7 @@ export function reducer(state: any, action: any) {
                 b.id === action.block.id ? {
                     ...b,
                     ...action.block
-                 } : b
+                } : b
             )
         }
     } else if (action.type === "updatePlugin") {

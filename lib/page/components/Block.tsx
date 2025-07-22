@@ -32,7 +32,7 @@ function Block({ id }: { id: number; }) {
         <div
             id={`block-${block.id}`}
             style={styles}
-            className={`py-8`}
+            className={`py-18`}
         >
             <div className={`container mx-auto
                 ${blockLayout[block.layout]}

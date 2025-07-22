@@ -54,6 +54,21 @@ export function reducer(state: any, action: any) {
                 } : b
             )
         }
+    } else if (action.type === "updateBlocks") {
+        const blocks = state.blocks.map((block: PageBlock) => {
+            const newBlock = action.blocks.find((b: PageBlock) => b.id === block.id)
+            if (newBlock) {
+                return {
+                    ...block,
+                    ...newBlock
+                }
+            };
+            return block;
+        })
+        return {
+            ...state,
+            blocks: blocks.sort((a: PageBlock, b: PageBlock) => a.position - b.position)
+        }
     } else if (action.type === "updatePlugin") {
         return {
             ...state,

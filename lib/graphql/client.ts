@@ -16,7 +16,8 @@ export function createSSRClient(host: string) {
                 headers: {
                     host,
                 }
-            }
+            },
+            requestPolicy: "network-only"
         })
     }
 }

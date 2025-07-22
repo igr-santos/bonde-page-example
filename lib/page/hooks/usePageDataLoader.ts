@@ -27,6 +27,7 @@ export default function usePageDataLoader(filter: UsePageDataLoaderFilter) {
             .query(getMobilizationByFilter, { filter })
             .toPromise()
             .then((result) => {
+                console.log("usePageDataLoader ->> result ->>", result);
                 const pageData = transformBondeResponseToPage(result)
                 dispatch({ type: "success", ...pageData });
             })

@@ -13,4 +13,4 @@ export default gql`
             mobilization_id
         }
     }
-`
+`;

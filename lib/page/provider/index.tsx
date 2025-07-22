@@ -3,7 +3,7 @@ import React, { useCallback, useState } from "react";
 import { createContext } from "use-context-selector";
 
 import { createCSRClient } from "@/lib/graphql/client";
-import { updateWidgetGql, updateBlockGql } from "@/lib/graphql/mutations";
+import { updateWidgetGql, updateBlockGql, updateBlocksGql } from "@/lib/graphql/mutations";
 
 import { usePageDataLoader } from "../hooks";
 import type { PageData, PagePlugin, PageBlock } from "../types/page";
@@ -28,7 +28,7 @@ const Notifications = ({ notifications }: { notifications: Notification[] }) => 
                     `}
                 >
                     {n.message}
-            </div>
+                </div>
             ))}
         </div>
     )
@@ -38,6 +38,7 @@ type PageContextValue = {
     meta: PageData["meta"];
     blocks: PageData["blocks"];
     updateBlock: (block: PageBlock) => void;
+    moveBlock: (active: PageBlock, over: PageBlock) => void;
     plugins: PageData["plugins"];
     updatePlugin: (plugin: PagePlugin) => void
     theme: PageData["theme"];
@@ -61,7 +62,8 @@ export default function PageProvider({ children }: { children: React.ReactNode }
     const updateBlock = useCallback(({ id, __typename, ...updatedFields }: PageBlock) => {
         // TODO: update on GraphQL API
         const client = createCSRClient();
-        console.log("updateBlock", { id, updatedFields });
+        // console.log("updateBlock", { id, updatedFields });
+
         client.mutation(updateBlockGql, {
             id: id,
             updated_fields: updatedFields
@@ -74,8 +76,52 @@ export default function PageProvider({ children }: { children: React.ReactNode }
             }).catch((err) => {
                 console.error("updateBlock ->> GraphQL:", err);
             })
-        
+
     }, [dispatch]);
+
+    const moveBlock = (active: { id: number }, over: { id: number }) => {
+        const fromIndex = state.blocks.findIndex((block: PageBlock) => block.id === active.id);
+        const toIndex = state.blocks.findIndex((block: PageBlock) => block.id === over.id);
+
+        // console.log("moveBlock", { fromIndex, toIndex, state });
+
+        if (fromIndex === -1 || toIndex === -1) return state;
+
+        // Cria uma cópia ordenada dos blocos
+        const sortedBlocks = [...state.blocks].sort((a, b) => a.position - b.position);
+
+        // Remove o bloco da posição original
+        const [movedBlock] = sortedBlocks.splice(fromIndex, 1);
+
+        // Insere o bloco na nova posição
+        sortedBlocks.splice(toIndex, 0, movedBlock);
+
+        // Reatribui a posição de todos os blocos
+        const reindexedBlocks = sortedBlocks.map((block, index) => ({
+            ...block,
+            position: index + 1,
+        }));
+
+        // TODO: update on GraphQL API
+        const client = createCSRClient();
+        const updates = reindexedBlocks.map(block => ({ where: { id: { _eq: block.id } }, _set: { position: block.position } }));
+        // console.log("updateBlocks", { updates });
+
+        // TODO: Criar um lógica de segurança, mover os blocos antes de submeter os dados e alterar os estado
+        // em caso de sucesso disparar mensagem e em caso de erro entender melhor fluxo para retornar
+        // o estado da aplicação.
+        dispatch({ type: "updateBlocks", blocks: reindexedBlocks });
+        client.mutation(updateBlocksGql, { updates })
+            .toPromise()
+            .then((result) => {
+                // console.log(result);
+                // Confirmar se de fato essa é a nova chamada de atualização do estado.
+                dispatch({ type: "updateBlocks", blocks: result.data?.update_blocks_many.map((obj: any) => obj.returning[0]) });
+                notify("Bloco movido com sucesso!", "success");
+            }).catch((err) => {
+                console.error("moveBlock ->> GraphQL:", err);
+            })
+    }
 
     const updatePlugin = useCallback(({ id, __typename, ...updatedFields }: PagePlugin) => {
         // TODO: update on GraphQL API
@@ -102,6 +148,7 @@ export default function PageProvider({ children }: { children: React.ReactNode }
                 meta: state.meta,
                 blocks: state.blocks,
                 updateBlock: updateBlock,
+                moveBlock: moveBlock,
                 plugins: state.plugins,
                 updatePlugin: updatePlugin,
                 theme: state.theme,
@@ -133,6 +180,7 @@ export function PageServerProvider({
                 // não serão usados em renderizações SSR
                 updatePlugin: () => { },
                 updateBlock: () => { },
+                moveBlock: () => { },
             }}
         >
             {children}

@@ -20,6 +20,7 @@ export interface PageBlock {
     bg_imagem?: string;
     hidden?: boolean;
     menu_hidden?: boolean;
+    position: number;
     // 
     plugins: number[];
     layout: string;

@@ -23,6 +23,8 @@ export const useBlock = (id: number) =>
 
 export const useUpdateBlock = () => useContextSelector(PageContext, ctx => ctx!.updateBlock);
 
+export const useMoveBlock = () => useContextSelector(PageContext, ctx => ctx!.moveBlock);
+
 export const useEditable = () => useContextSelector(PageContext, ctx => ctx!.editable);
 
 export { default as usePageDataLoader } from "./usePageDataLoader";

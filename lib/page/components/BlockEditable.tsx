@@ -1,7 +1,10 @@
+import {useSortable} from '@dnd-kit/sortable';
+import {CSS} from '@dnd-kit/utilities';
+
 import { PageBlock } from "../types";
 import { useDashboard } from "@/components/Dashboard";
 
-function Icon () {
+function EditIcon () {
     return (
         <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <g id="SVGRepo_bgCarrier" strokeWidth="0"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g>
@@ -13,20 +16,54 @@ function Icon () {
     )
 };
 
+function MoveIcon () {
+    return (
+        <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
+            <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g>
+            <g id="SVGRepo_iconCarrier">
+                <path d="M12 3V21M12 3L9 6M12 3L15 6M12 21L15 18M12 21L9 18M3 12H21M3 12L6 15M3 12L6 9M21 12L18 9M21 12L18 15" stroke="#000000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></path>
+            </g>
+        </svg>
+    )
+}
+
 export default function BlockEditable({ children, block }: { children: React.ReactNode, block: PageBlock }) {
     const { open } = useDashboard();
+    const {
+        attributes,
+        listeners,
+        setNodeRef,
+        transform,
+        transition,
+    } = useSortable({id: block.id});
+
+    const style = {
+        transform: CSS.Transform.toString(transform),
+        transition,
+    };
 
     return (
-        <div className="relative group">
+        <div className="relative group" ref={setNodeRef} style={style}>
             {children}
-            <button
-                type="button"
-                onClick={() => open("EditBlockForm", block.id)}
-                className="absolute bottom-2 right-4 flex gap-2 bg-black/40 px-3 py-1 rounded-sm hover:bg-black/20 cursor-pointer opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity duration-200"
-            >
-                <Icon />
-                <span className="text-sm">Editar</span>
-            </button>
+            <div className="absolute bottom-2 right-4 flex gap-4 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                <button
+                    type="button"
+                    onClick={() => open("EditBlockForm", block.id)}
+                    className="flex gap-2 text-sm px-2 py-1 bg-gray-200 rounded hover:bg-gray-300 cursor-grab"
+                >
+                    <EditIcon />
+                    <span>Editar</span>
+                </button>
+                <button
+                    {...listeners}
+                    {...attributes}
+                    className="flex gap-2 text-sm px-2 py-1 bg-gray-200 rounded hover:bg-gray-300 cursor-grab"
+                >
+                    <MoveIcon />
+                    <span>Mover</span>
+                </button>
+            </div>
         </div>
     )
 }

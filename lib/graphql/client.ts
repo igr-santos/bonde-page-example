@@ -63,5 +63,6 @@ export function createCSRClient() {
                 host: typeof window !== "undefined" ? window.location.host : "",
             },
         },
+        requestPolicy: "network-only"
     });
 }

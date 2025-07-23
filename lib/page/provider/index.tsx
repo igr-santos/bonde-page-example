@@ -1,6 +1,7 @@
 "use client";
 import React, { useCallback, useState } from "react";
 import { createContext } from "use-context-selector";
+import { toast } from "sonner";
 
 import { createCSRClient } from "@/lib/graphql/client";
 import { updateWidgetGql, updateBlockGql, updateBlocksGql } from "@/lib/graphql/mutations";
@@ -47,17 +48,12 @@ type PageContextValue = {
 
 export const PageContext = createContext<PageContextValue | null>(null);
 
-export default function PageProvider({ children }: { children: React.ReactNode }) {
-    const [notifications, setNotifications] = useState<Notification[]>([]);
-    const { state, dispatch } = usePageDataLoader({ slug: { _eq: "testes-de-widgets" } });
-
-    const notify = (message: string, kind: Notification["kind"] = "info") => {
-        const id = `${Date.now()}-${Math.random()}`;
-        setNotifications((prev: any[]) => [...prev, { id, message, kind }]);
-        setTimeout(() => {
-            setNotifications((prev) => prev.filter((n) => n.id !== id));
-        }, 2000); // tempo de exibição
-    }
+export default function PageProvider({ children, site }: { children: React.ReactNode, site?: string }) {
+    const { state, dispatch } = usePageDataLoader(
+        site?.includes(".bonde.devel")
+            ? { slug: { _eq: site?.replace(".bonde.devel", "") } }
+            : { custom_domain: { _eq: `www.${site?.replace("www", "")}` } }
+        );
 
     const updateBlock = useCallback(({ id, __typename, ...updatedFields }: PageBlock) => {
         // TODO: update on GraphQL API
@@ -72,7 +68,7 @@ export default function PageProvider({ children }: { children: React.ReactNode }
             .then((result) => {
                 console.log(result);
                 dispatch({ type: "updateBlock", block: result.data?.update_blocks_by_pk });
-                notify("Bloco atualizado com sucesso!", "success");
+                toast.success("Bloco atualizado com sucesso.");
             }).catch((err) => {
                 console.error("updateBlock ->> GraphQL:", err);
             })
@@ -117,7 +113,7 @@ export default function PageProvider({ children }: { children: React.ReactNode }
                 // console.log(result);
                 // Confirmar se de fato essa é a nova chamada de atualização do estado.
                 dispatch({ type: "updateBlocks", blocks: result.data?.update_blocks_many.map((obj: any) => obj.returning[0]) });
-                notify("Bloco movido com sucesso!", "success");
+                toast.success("Bloco movido com sucesso.");
             }).catch((err) => {
                 console.error("moveBlock ->> GraphQL:", err);
             })
@@ -133,7 +129,7 @@ export default function PageProvider({ children }: { children: React.ReactNode }
             .toPromise()
             .then((result) => {
                 dispatch({ type: "updatePlugin", plugin: result.data?.update_widgets_by_pk });
-                notify("Plugin atualizado com sucesso!", "success");
+                toast.success("Plugin atualizado com sucesso.")
             }).catch((err) => {
                 console.error("updatePlugin ->> GraphQL:", err);
             })
@@ -156,7 +152,6 @@ export default function PageProvider({ children }: { children: React.ReactNode }
             }}
         >
             {children}
-            <Notifications notifications={notifications} />
         </PageContext.Provider>
     );
 }
@@ -181,7 +176,7 @@ export function PageServerProvider({
                 updatePlugin: () => { },
                 updateBlock: () => { },
                 moveBlock: () => { },
-            }}
+            } as any}
         >
             {children}
         </PageContext.Provider>

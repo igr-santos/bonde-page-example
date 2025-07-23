@@ -1,18 +1,16 @@
 'use client';
-import React, { useCallback } from "react";
-// import { createCSRClient } from "@/lib/graphql/client";
-// import { getHostFromWindow } from '@/lib/graphql/getHost';
-// import { getMobilizationByFilter } from "@/lib/graphql/queries";
-// import { PageProvider, Page } from "@/lib/page";
-import { PageProvider, Page } from "@/lib/page";
-import Dashboard from "@/components/Dashboard";
+import React, { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 export default function Editor() {
-    return (
-        <PageProvider>
-            <Dashboard>
-                <Page />
-            </Dashboard>
-        </PageProvider>
-    );
+    // Redireciona o Usuário para o administrador, isso evita a necessidade de lidar com vários
+    // domínios do redirect_uri do serviço de Autenticação e Autorização (Keycloak)
+    const router = useRouter();
+
+    useEffect(() => {
+        const site = window.location.host;
+        router.push(`https://editor.bonde.devel/admin?site=${site}`);
+    }, []);
+
+    return <></>;
 }

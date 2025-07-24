@@ -1,0 +1,12 @@
+{
+    "HomePage": {
+        "title": "Hello world!",
+        "about": "Go to the about page"
+    },
+    "Dashboard": {
+        "logout": "Sair"
+    },
+    "Page": {
+        "contentPlugin": "Conteúdo"
+    }
+}

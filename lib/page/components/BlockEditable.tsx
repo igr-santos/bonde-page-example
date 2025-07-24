@@ -46,7 +46,7 @@ export default function BlockEditable({ children, block }: { children: React.Rea
     return (
         <div className="relative group" ref={setNodeRef} style={style}>
             {children}
-            <div className="absolute bottom-2 right-1/2 flex gap-2 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+            <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-2 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity duration-200">
                 <button
                     type="button"
                     onClick={() => open("EditBlockForm", block.id)}

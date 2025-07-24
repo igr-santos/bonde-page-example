@@ -3,9 +3,11 @@ import React from "react";
 import { usePlugin } from "../hooks";
 import PluginFallback from "./PluginFallback";
 import Content from "../plugins/content";
+import Draft from "../plugins/draft";
 
-export const plugins: any = {
+export const installedPlugins: any = {
     content: Content,
+    draft: Draft
 }
 
 
@@ -14,7 +16,7 @@ function Plugin({ id }: { id: number }) {
 
     if (!plugin) return <>Plugin não encontrado!</>;
 
-    const Component = plugins[plugin.kind] || (() => <PluginFallback kind={plugin.kind} />);
+    const Component = installedPlugins[plugin.kind] || (() => <PluginFallback kind={plugin.kind} />);
 
     return (
         <div className="p-2 min-h-30">

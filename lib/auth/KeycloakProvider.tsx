@@ -19,7 +19,7 @@ export function KeycloakProvider({ children }: { children: React.ReactNode }) {
 
     useEffect(() => {
         keycloak
-            .init({ onLoad: 'login-required' })
+            .init({ onLoad: 'login-required', checkLoginIframe: false })
             .then((auth) => {
                 setAuthenticated(auth);
                 setInitialized(true);

@@ -1,5 +1,6 @@
 "use client";
 import React, { Suspense, lazy } from "react";
+import { useTranslations } from 'next-intl';
 import { useAuth } from "@/lib/auth";
 import { createContext, useContext, useState, ReactNode } from "react";
 import Fallback from "./Fallback";
@@ -16,6 +17,7 @@ export default function DashboardProvider({ children }: { children: ReactNode })
     const [isOpen, setIsOpen] = useState(false);
     const [render, setRender] = useState<{ component: string, id: number } | null>(null);
     const { keycloak } = useAuth();
+    const t = useTranslations("Dashboard");
 
     const open = (component: string, id: number) => {
         setRender({ component, id });
@@ -34,7 +36,7 @@ export default function DashboardProvider({ children }: { children: ReactNode })
         <DashboardContext.Provider value={{ isOpen, open, close }}>
             <div className="bg-black text-white px-5 fixed top-0 w-full z-3 h-12 max-h-12 flex justify-between items-center">
                 <p><strong>B</strong>ONDE</p>
-                <button className="cursor-pointer hover:underline" type="button" onClick={() => keycloak.logout()}>Sair</button>
+                <button className="cursor-pointer hover:underline" type="button" onClick={() => keycloak.logout()}>{t("logout")}</button>
             </div>
             <div className="h-12" />
             {children}

@@ -30,7 +30,7 @@ export default function usePageDataLoader(filter: UsePageDataLoaderFilter) {
             .query(getMobilizationByFilter, { filter })
             .toPromise()
             .then((result) => {
-                // console.log("usePageDataLoader ->> result ->>", result);
+                console.log("usePageDataLoader ->> result ->>", result);
                 
                 // ⛔ Se o resultado for vazio ou sem autorização, redireciona
                 if (!result.data || result.data.mobilizations.length === 0) {

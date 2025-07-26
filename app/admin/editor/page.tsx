@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { PageProvider, Page } from "@/lib/page";
-import Dashboard from "@/components/Dashboard";
+import { DashboardProvider, DashboardLayout } from "@/lib/admin";
 
 export default function Editor() {
     const [site, setSite] = useState<string | undefined>(undefined);
@@ -23,9 +23,11 @@ export default function Editor() {
     
     return (
         <PageProvider site={site}>
-            <Dashboard>
-                <Page />
-            </Dashboard>
+            <DashboardProvider>
+                <DashboardLayout>
+                    <Page />
+                </DashboardLayout>
+            </DashboardProvider>
         </PageProvider>
     );
 }

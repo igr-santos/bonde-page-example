@@ -1,5 +1,5 @@
 "use client";
-import React, { useCallback, useState } from "react";
+import React, { useCallback } from "react";
 import { createContext } from "use-context-selector";
 import { toast } from "sonner";
 
@@ -9,31 +9,6 @@ import { updateWidgetGql, updateBlockGql, updateBlocksGql } from "@/lib/graphql/
 import { usePageDataLoader } from "../hooks";
 import type { PageData, PagePlugin, PageBlock } from "../types/page";
 
-
-type Notification = {
-    id: string;
-    kind: "success" | "error" | "info";
-    message: "string";
-}
-
-const Notifications = ({ notifications }: { notifications: Notification[] }) => {
-    return (
-        <div className="fixed top-4 right-4 z-50 space-y-2">
-            {notifications.map((n) => (
-                <div
-                    key={n.id}
-                    className={`px-4 py-2 rounded shadow-lg text-white transition-transform ease-out transform translate-y-0 opacity-100
-                        ${n.kind === "success" ? "bg-green-600" : ""}
-                        ${n.kind === "error" ? "bg-red-600" : ""}
-                        ${n.kind === "info" ? "bg-blue-600" : ""}
-                    `}
-                >
-                    {n.message}
-                </div>
-            ))}
-        </div>
-    )
-}
 
 type PageContextValue = {
     meta: PageData["meta"];
@@ -121,6 +96,7 @@ export default function PageProvider({ children, site }: { children: React.React
 
     const updatePlugin = useCallback(({ id, __typename, ...updatedFields }: PagePlugin) => {
         // TODO: update on GraphQL API
+        // console.log("updatedFields", { updatedFields });
         const client = createCSRClient();
         client.mutation(updateWidgetGql, {
             id: id,

@@ -1,8 +1,10 @@
+import { useEffect } from 'react';
 import {useSortable} from '@dnd-kit/sortable';
 import {CSS} from '@dnd-kit/utilities';
 
+import { useUpdateBlock } from "@/lib/page/hooks"
+import { usePanelController, useRegister } from '@/lib/admin/DashboardContext';
 import { PageBlock } from "../types";
-import { useDashboard } from "@/components/Dashboard";
 
 function EditIcon () {
     return (
@@ -29,7 +31,9 @@ function MoveIcon () {
 }
 
 export default function BlockEditable({ children, block }: { children: React.ReactNode, block: PageBlock }) {
-    const { open } = useDashboard();
+    const register = useRegister();
+    const updateBlock = useUpdateBlock();
+    const { open } = usePanelController();
     const {
         attributes,
         listeners,
@@ -37,6 +41,38 @@ export default function BlockEditable({ children, block }: { children: React.Rea
         transform,
         transition,
     } = useSortable({id: block.id});
+
+    useEffect(() => {
+        register({
+            panelId: `editBlock${block.id}`,
+            schema: {
+                title: "Editar Bloco",
+                type: "object",
+                properties: {
+                    name: { type: ["string", "null"], title: "Nome" },
+                    bg_class: { type: ["string", "null"], title: "Cor de fundo" },
+                    bg_imagem: { type: ["string", "null"], title: "Imagem de fundo" },
+                    hidden: { type: ["boolean", "null"], title: "Esconder Bloco?" },
+                    menu_hidden: { type: ["boolean", "null"], title: "Esconder menu?" },
+                }
+            },
+            uiSchema: {
+                bg_class: {
+                    "ui:widget": "color"
+                }
+            },
+            initialData: {
+                name: block?.name,
+                bg_class: block?.bg_class,
+                bg_image: block?.bg_imagem,
+                hidden: block?.hidden,
+                menu_hidden: block?.menu_hidden
+            },
+            action: (data) => {
+                updateBlock({ id: block.id, ...data });
+            }
+        })
+    }, [register]);
 
     const style = {
         transform: CSS.Transform.toString(transform),
@@ -49,7 +85,7 @@ export default function BlockEditable({ children, block }: { children: React.Rea
             <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-2 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity duration-200">
                 <button
                     type="button"
-                    onClick={() => open("EditBlockForm", block.id)}
+                    onClick={() => open(`editBlock${block.id}`)}
                     className="flex gap-2 text-sm px-2 py-1 bg-gray-200 rounded hover:bg-gray-300 cursor-grab"
                 >
                     <EditIcon />

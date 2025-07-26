@@ -49,3 +49,5 @@ body {
 .rjsf .btn {
   @apply border px-4 py-2 bg-black text-white hover:bg-transparent hover:text-black cursor-pointer;
 }
+
+/* .dashboard-panel  */

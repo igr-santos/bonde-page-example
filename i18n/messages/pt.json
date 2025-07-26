@@ -6,7 +6,10 @@
     "Dashboard": {
         "logout": "Sair"
     },
-    "Page": {
-        "contentPlugin": "Conteúdo"
+    "Plugin": {
+        "content": "Conteúdo",
+        "emailPressure": "Pressão por e-mail",
+        "form": "Formulário",
+        "phonePressure": "Pressão por telefone"
     }
 }

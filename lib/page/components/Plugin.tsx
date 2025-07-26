@@ -2,12 +2,18 @@
 import React from "react";
 import { usePlugin } from "../hooks";
 import PluginFallback from "./PluginFallback";
-import Content from "../plugins/content";
-import Draft from "../plugins/draft";
+import ContentPlugin from "@/lib/page/plugins/content";
+import DraftPlugin from "@/lib/page/plugins/draft";
+import FormPlugin from "@/lib/page/plugins/form";
+import EmailPressurePlugin from "@/lib/page/plugins/pressure";
+import PhonePressurePlugin from "@/lib/page/plugins/phone";
 
 export const installedPlugins: any = {
-    content: Content,
-    draft: Draft
+    content: ContentPlugin,
+    draft: DraftPlugin,
+    form: FormPlugin,
+    pressure: EmailPressurePlugin,
+    phone: PhonePressurePlugin
 }
 
 

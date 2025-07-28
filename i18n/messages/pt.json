@@ -10,6 +10,11 @@
         "content": "Conteúdo",
         "emailPressure": "Pressão por e-mail",
         "form": "Formulário",
-        "phonePressure": "Pressão por telefone"
+        "phonePressure": "Pressão por telefone",
+        "Form": {
+            "emailFormat": "E-mail inválido",
+            "required": "Preenchimento obrigatório",
+            "submitLabel": "Enviar"
+        }
     }
 }

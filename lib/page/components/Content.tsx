@@ -68,7 +68,7 @@ function Content() {
 
     return (
         <main className="flex-1 overflow-auto">
-            {blocks.map(({ id }) => <Block key={`block-${id}`} id={id} />)}
+            {blocks.filter(b => !b.hidden).map(({ id }) => <Block key={`block-${id}`} id={id} />)}
         </main>
     )
 }

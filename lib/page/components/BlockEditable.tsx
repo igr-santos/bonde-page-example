@@ -86,7 +86,7 @@ export default function BlockEditable({ children, block }: { children: React.Rea
                 <button
                     type="button"
                     onClick={() => open(`editBlock${block.id}`)}
-                    className="flex gap-2 text-sm px-2 py-1 bg-gray-200 rounded hover:bg-gray-300 cursor-grab"
+                    className="flex gap-2 text-sm px-2 py-1 bg-gray-200 rounded hover:bg-gray-300 cursor-pointer"
                 >
                     <EditIcon />
                     <span>Editar</span>

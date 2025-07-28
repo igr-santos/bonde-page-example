@@ -8,5 +8,12 @@
     },
     "Page": {
         "contentPlugin": "Content"
+    },
+    "Plugin": {
+        "Form": {
+            "emailFormat": "Invalid email",
+            "required": "Required field",
+            "submitLabel": "Submit"
+        }
     }
 }

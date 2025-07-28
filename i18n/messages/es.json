@@ -5,5 +5,12 @@
     },
     "Dashboard": {
         "logout": "Logout"
+    },
+    "Plugin": {
+        "Form": {
+            "emailFormat": "Correo electrónico no válido",
+            "required": "Campo obligatorio",
+            "submitLabel": "Enviar"
+        }
     }
 }

@@ -1,5 +1,6 @@
 import React, { useRef, useEffect, useState } from "react";
 import { Editor } from "@tinymce/tinymce-react";
+import { useLocale } from "next-intl";
 
 // Importa o CSS e os temas diretamente do TinyMCE instalado localmente
 import 'tinymce/tinymce';
@@ -30,6 +31,8 @@ import 'tinymce/skins/ui/oxide/skin.min.css';
 
 export default function HTMLEditor({ id, initialValue, onBlur }: { id: string, initialValue: string | undefined, onBlur: (content: string) => void }) {
     const editorRef = useRef(null);
+    let locale = useLocale();
+    locale = locale === "pt" ? "pt_BR" : locale === "es" ? "es_MX" : locale;
 
     useEffect(() => {
         return () => {
@@ -56,6 +59,8 @@ export default function HTMLEditor({ id, initialValue, onBlur }: { id: string, i
                 license_key: "gpl",
                 skin: false,
                 inline: true,
+                language_url: `/static/tinymce/langs/${locale}.js`,
+                language: locale
             } as any}
         />
     )
